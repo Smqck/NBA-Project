@@ -92,3 +92,51 @@ Explication : Environ 110 000 lignes n'ont aucune donnée statistique (seulement
 Colonne PLUS_MINUS :
 
 Explication : Elle contient environ 264 000 valeurs négatives. C'est tout à fait normal. Un différentiel peut être négatif si l'équipe encaisse plus de points qu'elle n'en marque pendant la présence du joueur.
+
+------------------------------------------------------------------------------------------------------------------
+RANKING 
+
+TEAM_ID	LEAGUE_ID	SEASON_ID	STANDINGSDATE	CONFERENCE	TEAM	G	W	L	W_PCT	HOME_RECORD	ROAD_RECORD	RETURNTOPLAY
+
+
+League ID : inutile, colonne que de 0
+
+Season_ID : Id de la saison, plusieurs team ont la meme (depend de l’année)
+
+Standing State : toutes les dates de match depuis le 1 er. Octobre 2003 jusqu’au 22 décembre 2022 
+
+Conference : Est / Ouest : saison régulière pas de distinction aux match mais playoff le meilleur de l’ouest vs meilleur de l’est
+
+Team : Equipe 
+
+G : Nombre de match joué
+
+W : Victoire 
+L : Défaite
+
+W_PCT = Win percentage
+Home_Record : sur l’année, le nombre de victoire / défaite à la maison
+
+Road_Record : sur l’année, le nombre de victoire / défaite à l’extérieur
+
+Return to play : pendant le covid, savoir si les équipes étaient autorisées à reprendre la compétition ((saison 2019-2020))
+
+—————————————————————
+Retenir GAME_ID pour relier aux autres 
+
+Jeter return to play 
+
+Transformer home record en pourcentage 
+
+Crée une colonne pour voir la différence de winrate entre équipe local et visiteur
+
+Voir si on peut crée une colonne pour voir leur taux de victoire sur les 5 derniers match
+
+-----------------------------------------------------------------------------------------------
+
+TEAMS 
+
+Inutile 
+
+-----------------------------------------------------------------------------------------------
+
