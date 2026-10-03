@@ -123,7 +123,6 @@ Road_Record : sur l’année, le nombre de victoire / défaite à l’extérieur
 
 Return to play : pendant le covid, savoir si les équipes étaient autorisées à reprendre la compétition ((saison 2019-2020))
 
-—————————————————————----------------------------------------------------------------------------
 Retenir GAME_ID pour relier aux autres 
 
 Jeter return to play 
@@ -148,3 +147,39 @@ Ne sert pas a grand chose sauf si on doit recuperer rapidement un joueur et sa s
 en regardant les 2eme et 3eme chiffre qui indique l'année
 
 -----------------------------------------------------------------------------------------------
+
+GAMES
+
+C'est le cœur de notre base de données. 
+Elle liste toutes les rencontres historiques.
+ Chaque ligne est un match unique, contenant 
+ l'identité des deux équipes qui s'affrontent, la date, et les statistiques collectives obtenues par chaque équipe
+  à la fin du match
+
+  Détail des colonnes :
+  GAME_DATE_EST : Date de la rencontre (fuseau horaire Est des US).   
+  GAME_STATUS_TEXT : Statut du match. Inutile car indique tout le temps "Final".   
+  HOME_TEAM_ID / VISITOR_TEAM_ID : Identifiants de l'équipe à domicile et de l'équipe visiteuse.   
+  SEASON : Année de début de la saison régulière.   
+  TEAM_ID_home / TEAM_ID_away : Doublons exacts des colonnes HOME/VISITOR_TEAM_ID.   PTS_home / PTS_away : Points marqués à la fin du match par chaque équipe.   FG_PCT, FT_PCT, FG3_PCT (home & away) : Pourcentages de réussite globaux aux tirs, lancers francs, et tirs à 3 points.   AST_home / AST_away : Nombre de passes décisives (Assists) du match.   REB_home / REB_away : Nombre de rebonds attrapés pendant le match.   
+  HOME_TEAM_WINS : Vaut 1 si l'équipe à domicile a gagné, 0 si elle a perdu. 
+
+
+  Objectif : 
+La colonne HOME_TEAM_WINS est notre variable à prédire .
+
+Jeter GAME_STATUS_TEXT (n'apporte aucune information).   
+Jeter TEAM_ID_home et TEAM_ID_away (informations en double).
+
+
+Problème majeur identifié : 
+On NE PEUT PAS utiliser les colonnes de statistiques du match (PTS_, FG_PCT_, AST_, REB_) directement pour prédire la victoire.
+Ces informations ne sont connues qu'à la fin de la rencontre. 
+Si on les laisse telles quelles, l'algorithme va "tricher" en voyant qui a marqué le plus de points pour deviner le vainqueur.
+
+Retenir GAME_DATE_EST, HOME_TEAM_ID et VISITOR_TEAM_ID pour faire la liaison (double jointure) 
+avec la table RANKING et récupérer le classement des deux équipes à la veille du match.
+
+Au lieu d'utiliser les stats de fin de match, transformer ces colonnes pour créer des statistiques d'avant-match :
+calculer la moyenne des points, rebonds et pourcentages de tirs sur les 5 ou 10 derniers matchs précédents de chaque équipe. 
+Cela donnera à l'algorithme l'état de "forme offensive et défensive" avant le coup d'envoi.
