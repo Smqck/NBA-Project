@@ -121,7 +121,7 @@ Road_Record : sur l’année, le nombre de victoire / défaite à l’extérieur
 
 Return to play : pendant le covid, savoir si les équipes étaient autorisées à reprendre la compétition ((saison 2019-2020))
 
-—————————————————————
+—————————————————————----------------------------------------------------------------------------
 Retenir GAME_ID pour relier aux autres 
 
 Jeter return to play 
