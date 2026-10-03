@@ -1,4 +1,6 @@
-games details : 1. Structure de l'identifiant de match (GAME_ID)
+Game details
+
+1. Structure de l'identifiant de match (GAME_ID)
 Chaque match possède un identifiant unique à 8 chiffres (ex: 22200477). Il se décrypte en trois parties :
 
 1er chiffre : Le type de compétition
@@ -140,3 +142,9 @@ Inutile
 
 -----------------------------------------------------------------------------------------------
 
+Players
+
+Ne sert pas a grand chose sauf si on doit recuperer rapidement un joueur et sa saison entre 2009 et 2019 sans passer par GAME_ID
+en regardant les 2eme et 3eme chiffre qui indique l'année
+
+-----------------------------------------------------------------------------------------------
