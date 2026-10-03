@@ -1,0 +1,94 @@
+games details : 1. Structure de l'identifiant de match (GAME_ID)
+Chaque match possède un identifiant unique à 8 chiffres (ex: 22200477). Il se décrypte en trois parties :
+
+1er chiffre : Le type de compétition
+
+1 : Pré-saison (Preseason)
+
+2 : Saison régulière (Regular Season)
+
+3 : All-Star Game
+
+4 : Playoffs
+
+5 : Play-In Tournament
+
+2ème et 3ème chiffres : L'année de début de saison
+
+Les années dans ce fichier vont de 03 (Saison 2003-2004) à 22 (Saison 2022-2023).
+
+Les 5 derniers chiffres : Le numéro chronologique du match dans la saison.
+
+2. Signification des Colonnes (Statistiques des joueurs)
+Informations Générales
+
+GAME_ID : Identifiant unique du match.
+
+TEAM_ID : Identifiant unique de l'équipe.
+
+TEAM_ABBREVIATION / TEAM_CITY : Abréviation (ex: LAL) et ville de l'équipe (ex: Los Angeles).
+
+PLAYER_ID / PLAYER_NAME : Identifiant unique et nom complet du joueur.
+
+NICKNAME : Surnom du joueur.
+
+START_POSITION : Position du joueur dans le 5 majeur s'il est titulaire (G=Meneur/Arrière, F=Ailier, C=Pivot). Vide s'il est remplaçant.
+
+COMMENT : Commentaire (souvent la raison de l'absence, ex: "DNP - Coach's Decision").
+
+Temps de jeu et Tirs (Field Goals)
+
+MIN : Temps de jeu (en "Minutes:Secondes" ou format décimal).
+
+FGA / FGM : Total des tirs de champ tentés (A = Attempted) et réussis (M = Made). Cela inclut les tirs à 2 points et à 3 points.
+
+FG_PCT : Pourcentage de réussite aux tirs de champ (FGM / FGA).
+
+FG3A / FG3M : Tirs à 3 points tentés et réussis.
+
+FG3_PCT : Pourcentage de réussite à 3 points (FG3M / FG3A).
+
+FTA / FTM : Lancers francs tentés et réussis (Free Throws).
+
+FT_PCT : Pourcentage de réussite aux lancers francs (FTM / FTA).
+
+Autres Statistiques (Box Score)
+
+OREB / DREB / REB : Rebonds offensifs / Rebonds défensifs / Total des rebonds.
+
+AST : Passes décisives (Assists).
+
+STL : Interceptions (Steals).
+
+BLK : Contres (Blocks).
+
+TO : Ballons perdus (Turnovers).
+
+PF : Fautes personnelles (Personal Fouls).
+
+PTS : Points marqués.
+
+PLUS_MINUS : Différentiel de points (+/-) de l'équipe lorsque le joueur est sur le terrain.
+
+3. Récapitulatif des anomalies et particularités à nettoyer
+Si vous devez préparer ces données pour un algorithme de Machine Learning ou une analyse, voici ce qu'il faut traiter :
+
+Colonne MIN (Minutes) :
+
+Problème 1 : 12 lignes contiennent des valeurs négatives (allant de -2 à -9). Elles proviennent toutes de deux matchs de pré-saison de 2008 (10800045 et 10800035). Action conseillée : Supprimer ces 12 lignes ou remplacer par zéro.
+
+Problème 2 : 19 lignes affichent des temps de jeu impossibles (> 60 minutes), avec des pics aberrants à 86 ou 96 minutes. Action conseillée : Filtrer et corriger/supprimer les lignes > 70.
+
+Formatage ("0.000000:12") : Ce n'est pas un défaut du jeu de données, mais un bug de lecture de votre tableur (type Excel/Numbers) qui interprète mal les valeurs textuelles inférieures à 1 minute (ex: 0:12 ou 0:18). Action conseillée : En code (Python/Pandas), convertir la colonne MIN en décimal mathématique.
+
+Colonne PF (Fautes Personnelles) :
+
+Problème : 1 ligne affiche 15 fautes pour Tom Gugliotta lors du match 10400068. C'est impossible (un joueur est exclu à 6 fautes en NBA). Action conseillée : Supprimer cette ligne ou borner les valeurs aberrantes de PF.
+
+Lignes vides / Valeurs nulles (NaN) :
+
+Explication : Environ 110 000 lignes n'ont aucune donnée statistique (seulement le nom du joueur). Ce ne sont pas des erreurs. Ce sont les joueurs présents sur la feuille de match mais qui ne sont pas entrés en jeu ("DNP - Did Not Play"). Action conseillée : Les supprimer si vous étudiez les performances en jeu, ou remplir de zéros si vous étudiez les effectifs.
+
+Colonne PLUS_MINUS :
+
+Explication : Elle contient environ 264 000 valeurs négatives. C'est tout à fait normal. Un différentiel peut être négatif si l'équipe encaisse plus de points qu'elle n'en marque pendant la présence du joueur.
