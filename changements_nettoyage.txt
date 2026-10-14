@@ -1,0 +1,117 @@
+Changements apportés aux tables (nettoyage)
+
+Script : nettoyage.py
+Lancer depuis le dossier du projet : .venv/bin/python nettoyage.py
+
+Entrée : les CSV exportés depuis Numbers (dossier CSV/). Ils ne sont pas modifiés.
+Sortie : les tables nettoyées dans CSV/propre/
+  - games_clean.csv
+  - ranking_clean.csv
+  - games_details_clean.csv
+
+Pour lire ces fichiers en Python :
+  pd.read_csv('CSV/propre/games_clean.csv', sep=';')
+
+Attention : CSV/propre/ n'est pas envoyé sur Git (games_details_clean.csv fait 111 Mo,
+GitHub refuse les fichiers de plus de 100 Mo). Il faut relancer le script pour recréer les fichiers.
+
+------------------------------------------------------------------------------------------------------------------
+GAMES  ->  games_clean.csv
+
+Avant : 26 651 matchs, 21 colonnes
+Après : 26 523 matchs, 19 colonnes
+
+Colonnes supprimées :
+
+GAME_STATUS_TEXT : vaut toujours "Final", n'apporte aucune information
+
+TEAM_ID_home / TEAM_ID_away : doublons exacts de HOME_TEAM_ID et VISITOR_TEAM_ID
+
+Lignes supprimées :
+
+29 matchs en double (même GAME_ID présent 2 fois, tous en saison 2020-2021)
+
+99 matchs sans statistiques (PTS_home / PTS_away vides)
+
+Colonnes ajoutées / modifiées :
+
+GAME_DATE_EST : convertie en vraie date (permet de trier et de comparer les dates)
+
+TYPE_MATCH : type de match tiré du 1er chiffre du GAME_ID
+(Pre-saison, Saison reguliere, Playoffs, Play-in). Rien n'est filtré, c'est à choisir pour l'analyse.
+
+Tri : par date puis par GAME_ID
+
+Toujours vrai : les stats PTS_, FG_PCT_, FT_PCT_, FG3_PCT_, AST_, REB_ sont des stats de fin de match.
+Ne pas les utiliser telles quelles pour prédire le match (fuite de données), seulement pour calculer
+des moyennes sur les matchs PRÉCÉDENTS.
+
+------------------------------------------------------------------------------------------------------------------
+RANKING  ->  ranking_clean.csv
+
+Avant : 210 342 lignes, 13 colonnes
+Après : 210 313 lignes, 19 colonnes
+
+Colonnes supprimées :
+
+LEAGUE_ID : que des 0
+
+RETURNTOPLAY : spécifique à la bulle Covid (saison 2019-2020)
+
+Lignes supprimées :
+
+29 doublons (même équipe, même date, tous en saison 2020-2021)
+
+Colonnes ajoutées :
+
+TYPE_SAISON : 1er chiffre de SEASON_ID (1 = Pre-saison, 2 = Saison reguliere)
+
+SEASON : année de début de saison, tirée de SEASON_ID (ex : 22022 -> 2022)
+
+HOME_W / HOME_L / HOME_W_PCT : HOME_RECORD découpé en victoires, défaites et pourcentage
+(ex : "10-3" -> 10, 3, 0.769)
+
+ROAD_W / ROAD_L / ROAD_W_PCT : même chose pour ROAD_RECORD
+
+Choix : quand le bilan est "0-0" (aucun match joué), le pourcentage est laissé VIDE et non à 0,
+sinon on ferait croire que l'équipe perd tous ses matchs.
+
+STANDINGSDATE : convertie en vraie date
+
+Tri : par date puis par TEAM_ID
+
+Attention pour la jointure avec GAMES : le classement d'une date INCLUT déjà les matchs de ce jour-là
+(vérifié : Utah perd le 09/12/2022 -> la défaite est déjà comptée dans le classement du 09/12).
+Il faut prendre le classement de la VEILLE du match.
+
+------------------------------------------------------------------------------------------------------------------
+GAMES_DETAILS  ->  games_details_clean.csv
+
+Avant : 668 628 lignes, 29 colonnes
+Après : 668 317 lignes, 31 colonnes
+
+Lignes supprimées :
+
+289 doublons (même joueur dans le même match)
+
+22 lignes aberrantes :
+  - minutes négatives (matchs de pré-saison 2008)
+  - minutes supérieures à 70
+  - plus de 6 fautes (Tom Gugliotta, 15 fautes, match 10400068)
+
+Colonnes modifiées :
+
+MIN : convertie en minutes décimales (ex : "18:06" ou "18.000000:06" -> 18.1)
+
+Colonnes ajoutées :
+
+A_JOUE : True si le joueur est entré en jeu, False sinon.
+Les 109 849 joueurs non entrés en jeu (DNP) sont GARDÉS : ils peuvent servir à repérer les absences.
+Pour étudier les performances, filtrer avec A_JOUE == True.
+
+TYPE_MATCH : même colonne que dans GAMES (Pre-saison, Saison reguliere, Playoffs, Play-in)
+
+------------------------------------------------------------------------------------------------------------------
+TEAMS / PLAYERS
+
+Pas de changement.
