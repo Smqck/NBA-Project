@@ -1,19 +1,22 @@
 """
 Nettoyage des tables du projet NBA.
 
-Lit les CSV exportés depuis Numbers (dossier CSV/) et écrit les versions
-nettoyées dans CSV/propre/. Les fichiers d'origine ne sont pas modifiés.
+Lit les CSV exportés depuis Numbers (dossier donnees/) et écrit les versions
+nettoyées dans donnees/propre/. Les fichiers d'origine ne sont pas modifiés.
 
 Lancer depuis le dossier du projet :
-    .venv/bin/python nettoyage.py
+    .venv/bin/python scripts/nettoyage.py
 """
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-DOSSIER = Path(__file__).parent / 'CSV'
+# Le script est dans scripts/ : le dossier du projet est le dossier parent
+PROJET = Path(__file__).parent.parent
+DOSSIER = PROJET / 'donnees'
 SORTIE = DOSSIER / 'propre'
+SORTIE.mkdir(exist_ok=True)
 
 TYPES_MATCH = {'1': 'Pre-saison', '2': 'Saison reguliere', '3': 'All-Star',
                '4': 'Playoffs', '5': 'Play-in'}
