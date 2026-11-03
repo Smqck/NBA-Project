@@ -1,4 +1,7 @@
 .venv/
 .ipynb_checkpoints/
 .DS_Store
-CSV/propre/
+# Tables nettoyées : trop grosses pour GitHub, à recréer avec scripts/nettoyage.py
+donnees/propre/
+# Fichiers personnels, hors projet
+perso/
